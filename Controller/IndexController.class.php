@@ -8,12 +8,19 @@ class IndexController extends RestController
 
     public function index()
     {
-        $this->response([1], 'json');
+
+        $this->response(json_decode(file_get_contents("php://input")), 'json');
     }
 
 
     public function upload_dish()
     {
+        $json = $_POST['json'];
+
+        $myfile = fopen("/tmp/testfile.txt", "w")
+        fwrite($myfile, $json);
+        fclose($myfile);
+        
         $userName = $_POST['userName'];
         $dish_name = $_POST['dish_name'];
         $description = $_POST['description'];
@@ -121,11 +128,11 @@ class IndexController extends RestController
         $location = $_POST['location'];
         if ($location != "") {
             $restaurant = M("restaurant");
-            $result = $restaurant->where("addr like '%$location%'")->select();
+            $result = $colum->where("addr like '%$location%'")->select();
             $response["return_code"] = 0;
             $response["message"] = "查找成功";
-            $response["data"] = $result;  
-        }                           
+            $response["data"] = $result;
+        }
         $this->response($response, 'json');
 
     }
